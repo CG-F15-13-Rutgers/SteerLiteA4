@@ -64,7 +64,8 @@ namespace SteerLib
 
 		//TODO
 		std::cout << "\nIn A*";
-
+		start = getPointFromGridIndex(gSpatialDatabase->getCellIndexFromLocation(start));
+		goal = getPointFromGridIndex(gSpatialDatabase->getCellIndexFromLocation(goal));
 		//create two nodes. one for start point and another for target point
 		SteerLib::AStarPlannerNode startNode(start);
 		SteerLib::AStarPlannerNode targetNode(goal);
@@ -144,22 +145,19 @@ namespace SteerLib
 				double tempG = currentNode->g + distFromCurrentToIJ;
 				double tempH = Manhattan(neighbours[i].point, targetNode.point);//INSERT HEURISTIC HERE, currently using Manhattan
 				double tempF = tempG + tempH;
-				//doing double duty here. take out line 150 and put here lines 155 to 161
+	
 				double existingG;
 				int x;
 				bool processed = false;
-				for (x = 0; x < openSet.size(); x++) {// searching for 
+				for (x = 0; x < openSet.size(); x++) { 
 					if (openSet[x].point.operator==(neighbours[i].point)) {//found neighbor in openSet
 						existingG = openSet[x].g;
-						processed = true;//processed = true
+						processed = true;// 
 						break;
 					}
 				}
 
-				if (processed) {// if already exists in openlist, then compare  check to update
-								//replace in openlist
-								//find that neighbor point in openset
-								//paste here
+				if (processed) {
 
 					if (tempG < existingG) {//replace f,g,h, parent
 						openSet[x].f = tempF;
@@ -209,12 +207,11 @@ namespace SteerLib
 	void AStarPlanner::RetracePath(SteerLib::AStarPlannerNode startNode, SteerLib::AStarPlannerNode endNode, std::vector<Util::Point>& agentPath, SteerLib::GridDatabase2D* grid)
 	{//need to get grid points
 		SteerLib::AStarPlannerNode currentNode = endNode;
-		Util::Point temp;
+		
 		while (!(currentNode.operator==(startNode))) {
-			grid->getLocationFromIndex(grid->getCellIndexFromLocation(currentNode.point), temp);
 			//std::cout << "retrace: " << currentNode.point.x << "," << currentNode.point.z << std::endl;//USED FOR DEBUGGING
 			//std::cout << "grid location: " << temp.x << "," << temp.z << std::endl;//USED FOR DEBUGGING
-			agentPath.push_back(temp);
+			agentPath.push_back(currentNode.point);
 			currentNode = *currentNode.parent;
 
 		}
@@ -260,15 +257,15 @@ namespace SteerLib
 			for (int z = -1; z <= 1; z++) {
 				if ((x == 0) && (z == 0))
 					continue;
-				int checkX = currentPoint.x + x;
-				int checkZ = currentPoint.z + z;
+				double checkX = currentPoint.x + x;
+				double checkZ = currentPoint.z + z;
 				//check if checkX and checkY is inside of grid
 
 				//if ((checkX >= 0) && (checkX < (int)(grid->getGridSizeX)) && (checkZ >= 0) && (checkZ < grid->getGridSizeZ)) {
 				Util::Point n;
 				n.x = checkX;
 				n.z = checkZ;
-				SteerLib::AStarPlannerNode starNode(n);//0, parent
+				SteerLib::AStarPlannerNode starNode(n);
 				neighbours.push_back(starNode);
 				//}
 			}
