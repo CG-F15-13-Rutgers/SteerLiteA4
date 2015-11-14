@@ -197,7 +197,7 @@ namespace SteerLib
 
 	double AStarPlanner::Euclidean(Util::Point neighbor, Util::Point targetPoint)
 	{
-		return 0.0;
+		return abs(pow((neighbor.x - targetPoint.x), 2) + pow((neighbor.z - targetPoint.z), 2)) ;
 	}
 
 	double AStarPlanner::Manhattan(Util::Point neighbor, Util::Point targetPoint)
